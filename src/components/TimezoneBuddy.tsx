@@ -280,7 +280,7 @@ export function TimezoneBuddy() {
                       key={h}
                       className={cn(
                         "absolute top-0 bottom-0 w-px",
-                        major ? "bg-foreground/20" : "bg-foreground/8",
+                        major ? "bg-foreground/20" : "bg-foreground/10",
                       )}
                       style={{ left: `${(h / 24) * 100}%` }}
                     >
