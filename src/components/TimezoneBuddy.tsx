@@ -37,6 +37,18 @@ export function TimezoneBuddy() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [scrubMin, setScrubMin] = useState<number | null>(null); // minutes from local midnight; null = follow now
   const [dragId, setDragId] = useState<string | null>(null);
+  const [use12h, setUse12h] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("tzbuddy.use12h") === "1";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("tzbuddy.use12h", use12h ? "1" : "0");
+    } catch {}
+  }, [use12h]);
   const trackRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -170,6 +182,28 @@ export function TimezoneBuddy() {
           <span className="ml-auto text-xs text-header-foreground/60 hidden sm:block">
             Compare local times across cities, instantly.
           </span>
+          <div className="ml-auto sm:ml-4 flex items-center gap-1 text-xs bg-white/10 rounded-full p-1">
+            <button
+              onClick={() => setUse12h(false)}
+              className={cn(
+                "px-2.5 py-1 rounded-full transition",
+                !use12h ? "bg-accent-blue text-white" : "text-header-foreground/70 hover:text-header-foreground",
+              )}
+              aria-pressed={!use12h}
+            >
+              24h
+            </button>
+            <button
+              onClick={() => setUse12h(true)}
+              className={cn(
+                "px-2.5 py-1 rounded-full transition",
+                use12h ? "bg-accent-blue text-white" : "text-header-foreground/70 hover:text-header-foreground",
+              )}
+              aria-pressed={use12h}
+            >
+              12h
+            </button>
+          </div>
         </div>
       </header>
 
@@ -321,6 +355,7 @@ export function TimezoneBuddy() {
                   city={c}
                   previewedAt={previewedAt}
                   refKey={refKeyForUser}
+                  use12h={use12h}
                   onRemove={() => removeCity(c.id)}
                   onDragStart={() => onCardDragStart(c.id)}
                   onDragOver={(e) => onCardDragOver(e, c.id)}
@@ -363,6 +398,7 @@ function CityCard({
   city,
   previewedAt,
   refKey,
+  use12h,
   onRemove,
   onDragStart,
   onDragOver,
@@ -371,13 +407,16 @@ function CityCard({
   city: City;
   previewedAt: Date;
   refKey: string;
+  use12h: boolean;
   onRemove: () => void;
   onDragStart: () => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragEnd: () => void;
 }) {
   const lp = localParts(city.timezone, previewedAt);
-  const hh = String(lp.hour).padStart(2, "0");
+  const display12 = ((lp.hour + 11) % 12) + 1;
+  const ampm = lp.hour < 12 ? "AM" : "PM";
+  const hh = use12h ? String(display12) : String(lp.hour).padStart(2, "0");
   const mm = String(lp.minute).padStart(2, "0");
   const isWork = lp.hour >= 9 && lp.hour < 17;
   const isNight = lp.hour >= 22 || lp.hour < 7;
@@ -389,7 +428,7 @@ function CityCard({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
-      aria-label={`${city.name}, ${city.country}: ${hh}:${mm} (${day})`}
+      aria-label={`${city.name}, ${city.country}: ${hh}:${mm}${use12h ? ` ${ampm}` : ""} (${day})`}
       className={cn(
         "group relative flex items-center gap-4 rounded-2xl border border-border bg-card text-card-foreground px-5 py-4 shadow-soft transition-colors duration-300 animate-slide-in",
         isWork && "bg-work",
@@ -413,6 +452,7 @@ function CityCard({
       <div className="text-right">
         <div className="font-mono text-3xl tabular-nums tracking-tight">
           {hh}:{mm}
+          {use12h && <span className="text-sm ml-1 text-muted-foreground">{ampm}</span>}
         </div>
         <div
           className={cn(
