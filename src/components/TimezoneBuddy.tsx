@@ -37,6 +37,18 @@ export function TimezoneBuddy() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [scrubMin, setScrubMin] = useState<number | null>(null); // minutes from local midnight; null = follow now
   const [dragId, setDragId] = useState<string | null>(null);
+  const [use12h, setUse12h] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("tzbuddy.use12h") === "1";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("tzbuddy.use12h", use12h ? "1" : "0");
+    } catch {}
+  }, [use12h]);
   const trackRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
