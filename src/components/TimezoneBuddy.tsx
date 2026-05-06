@@ -398,6 +398,7 @@ function CityCard({
   city,
   previewedAt,
   refKey,
+  use12h,
   onRemove,
   onDragStart,
   onDragOver,
@@ -406,13 +407,16 @@ function CityCard({
   city: City;
   previewedAt: Date;
   refKey: string;
+  use12h: boolean;
   onRemove: () => void;
   onDragStart: () => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragEnd: () => void;
 }) {
   const lp = localParts(city.timezone, previewedAt);
-  const hh = String(lp.hour).padStart(2, "0");
+  const display12 = ((lp.hour + 11) % 12) + 1;
+  const ampm = lp.hour < 12 ? "AM" : "PM";
+  const hh = use12h ? String(display12) : String(lp.hour).padStart(2, "0");
   const mm = String(lp.minute).padStart(2, "0");
   const isWork = lp.hour >= 9 && lp.hour < 17;
   const isNight = lp.hour >= 22 || lp.hour < 7;
@@ -424,7 +428,7 @@ function CityCard({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDragEnd={onDragEnd}
-      aria-label={`${city.name}, ${city.country}: ${hh}:${mm} (${day})`}
+      aria-label={`${city.name}, ${city.country}: ${hh}:${mm}${use12h ? ` ${ampm}` : ""} (${day})`}
       className={cn(
         "group relative flex items-center gap-4 rounded-2xl border border-border bg-card text-card-foreground px-5 py-4 shadow-soft transition-colors duration-300 animate-slide-in",
         isWork && "bg-work",
@@ -448,6 +452,7 @@ function CityCard({
       <div className="text-right">
         <div className="font-mono text-3xl tabular-nums tracking-tight">
           {hh}:{mm}
+          {use12h && <span className="text-sm ml-1 text-muted-foreground">{ampm}</span>}
         </div>
         <div
           className={cn(
