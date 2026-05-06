@@ -182,6 +182,28 @@ export function TimezoneBuddy() {
           <span className="ml-auto text-xs text-header-foreground/60 hidden sm:block">
             Compare local times across cities, instantly.
           </span>
+          <div className="ml-auto sm:ml-4 flex items-center gap-1 text-xs bg-white/10 rounded-full p-1">
+            <button
+              onClick={() => setUse12h(false)}
+              className={cn(
+                "px-2.5 py-1 rounded-full transition",
+                !use12h ? "bg-accent-blue text-white" : "text-header-foreground/70 hover:text-header-foreground",
+              )}
+              aria-pressed={!use12h}
+            >
+              24h
+            </button>
+            <button
+              onClick={() => setUse12h(true)}
+              className={cn(
+                "px-2.5 py-1 rounded-full transition",
+                use12h ? "bg-accent-blue text-white" : "text-header-foreground/70 hover:text-header-foreground",
+              )}
+              aria-pressed={use12h}
+            >
+              12h
+            </button>
+          </div>
         </div>
       </header>
 
