@@ -355,6 +355,7 @@ export function TimezoneBuddy() {
                   city={c}
                   previewedAt={previewedAt}
                   refKey={refKeyForUser}
+                  use12h={use12h}
                   onRemove={() => removeCity(c.id)}
                   onDragStart={() => onCardDragStart(c.id)}
                   onDragOver={(e) => onCardDragOver(e, c.id)}
