@@ -115,6 +115,15 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  /* Time-Zone Buddy tokens */
+  --header: oklch(0.22 0.03 260);
+  --header-foreground: oklch(0.97 0.01 260);
+  --accent-blue: oklch(0.65 0.17 250); /* ~#4A90E2 */
+  --track: oklch(0.965 0.008 250);
+  --work: color-mix(in oklab, oklch(0.7 0.18 145) 18%, var(--card));
+  --night: color-mix(in oklab, oklch(0.25 0.02 260) 22%, var(--card));
+  --shadow-glow-val: 0 0 18px -2px oklch(0.65 0.17 250 / 0.6);
 }
 
 .dark {
